@@ -6,7 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Trogers1884\LaravelScheduleMgt\Console\{
     ListScheduledTasks,
     AddScheduledTask,
-    ToggleScheduledTask
+    ToggleScheduledTask,
+    RemoveScheduledTask
 };
 
 class ScheduleMgtServiceProvider extends ServiceProvider
@@ -35,6 +36,7 @@ class ScheduleMgtServiceProvider extends ServiceProvider
                 ListScheduledTasks::class,
                 AddScheduledTask::class,
                 ToggleScheduledTask::class,
+                RemoveScheduledTask::class,
             ]);
         }
     }

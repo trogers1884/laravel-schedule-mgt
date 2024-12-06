@@ -1,6 +1,7 @@
 {
   "name": "trogers1884/laravel-schedule-mgt",
   "description": "A Laravel package for managing scheduled tasks through file storage",
+  "version": "1.0.0",
   "type": "library",
   "license": "MIT",
   "authors": [

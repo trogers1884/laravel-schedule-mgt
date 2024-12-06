@@ -83,7 +83,7 @@ php artisan schedule:list
 
 #### Add a New Task
 ```bash
-php artisan schedule:add "command:name" \
+phpphp artisan schedule:add "command:name" \    # Note: The first argument is now 'task' internally
     --frequency=daily \
     --parameters='["--param1", "value1"]' \
     --freq-parameters='["21:00"]' \
@@ -91,6 +91,7 @@ php artisan schedule:add "command:name" \
 ```
 
 Options:
+- First argument: The artisan command to schedule
 - `--frequency`: The scheduling frequency (daily, hourly, weekly, etc.)
 - `--parameters`: JSON array of command parameters
 - `--freq-parameters`: JSON array of frequency method parameters
@@ -101,6 +102,11 @@ Options:
 ```bash
 php artisan schedule:toggle 1 --active=0
 ```
+#### Remove a Task
+```bash
+php artisan schedule:remove 1
+```
+This will completely remove the task with ID 1. You'll be asked to confirm before the task is removed. This action cannot be undone.
 
 ### Frequency Methods
 
@@ -144,6 +150,7 @@ You can add any of Laravel's schedule constraints:
 - `unlessBetween('23:00', '4:00')`
 - `when(closure)`
 - `skip(closure)`
+- `runInBackground()`
 
 ### Example Tasks
 
@@ -168,7 +175,8 @@ php artisan schedule:add "queue:work" \
     --constraints='[
         {"method":"withoutOverlapping"},
         {"method":"environments", "parameters":["production"]},
-        {"method":"evenInMaintenanceMode"}
+        {"method":"evenInMaintenanceMode"},
+        {"method":"runInBackground"}
     ]'
 ```
 
@@ -180,6 +188,28 @@ Run the test suite:
 composer test
 ```
 
+## Uninstallation
+
+To completely remove the package from your Laravel project:
+
+1. Remove your schedule configuration from your Laravel project:
+  - For Laravel 11: Remove the `ScheduleManager::schedule();` line from `routes/console.php`
+  - For Laravel 10: Remove the `ScheduleManager::schedule();` line from `app/Console/Kernel.php`
+
+2. Remove the published configuration file:
+```bash
+rm config/schedule-mgt.php
+```
+
+3. Remove the stored task data (optional):
+```bash
+rm -rf storage/app/schedule-mgt
+```
+
+4. Uninstall the package via composer:
+```bash
+composer remove trogers1884/laravel-schedule-mgt
+```
 ## Security
 
 If you discover any security related issues, please email security@yourdomain.com instead of using the issue tracker.
