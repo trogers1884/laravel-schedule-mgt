@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-schedule-mgt` will be documented in this file.
 
+## 1.0.2
+
+### Updated
+- Updated the package composer.json to work better with auto updating from Github.
+
 ## 1.0.1 - 2024-12-06
 
 ### Updated
