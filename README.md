@@ -216,7 +216,7 @@ If you discover any security related issues, please email security@yourdomain.co
 
 ## Credits
 
-- [Your Name](https://github.com/yourusername)
+- [Tom Rogers](https://github.com/trogers1884)
 - [All Contributors](../../contributors)
 
 ## License

@@ -26,12 +26,14 @@ class ScheduleStorage
 
     public function all(): array
     {
-        return json_decode(File::get($this->storageFile), true) ?? [];
+        $tasks = json_decode(File::get($this->storageFile), true) ?? [];
+        // Filter out deleted tasks
+        return array_values(array_filter($tasks, fn($task) => empty($task['deleted_at'])));
     }
 
     public function save(array $task): int
     {
-        $tasks = $this->all();
+        $tasks = json_decode(File::get($this->storageFile), true) ?? [];
 
         // Validate required fields
         $requiredFields = ['command', 'frequency_method'];
@@ -59,32 +61,43 @@ class ScheduleStorage
 
     public function update(int $id, array $data): bool
     {
-        $tasks = $this->all();
+        $tasks = json_decode(File::get($this->storageFile), true) ?? [];
+        $updated = false;
 
         foreach ($tasks as $key => $task) {
-            if ($task['id'] === $id) {
+            if ($task['id'] === $id && empty($task['deleted_at'])) {
                 $tasks[$key] = array_merge($task, $data, ['updated_at' => now()->toISOString()]);
-                File::put($this->storageFile, json_encode($tasks, JSON_PRETTY_PRINT));
-                return true;
+                $updated = true;
+                break;
             }
         }
 
-        return false;
+        if ($updated) {
+            File::put($this->storageFile, json_encode($tasks, JSON_PRETTY_PRINT));
+        }
+
+        return $updated;
     }
 
     public function delete(int $id): bool
     {
-        $tasks = $this->all();
+        $tasks = json_decode(File::get($this->storageFile), true) ?? [];
+        $found = false;
 
-        foreach ($tasks as $key => $task) {
+        // Remove the task completely instead of soft delete
+        $tasks = array_filter($tasks, function($task) use ($id, &$found) {
             if ($task['id'] === $id) {
-                $tasks[$key]['deleted_at'] = now()->toISOString();
-                File::put($this->storageFile, json_encode($tasks, JSON_PRETTY_PRINT));
-                return true;
+                $found = true;
+                return false; // Remove this task
             }
+            return true; // Keep other tasks
+        });
+
+        if ($found) {
+            File::put($this->storageFile, json_encode(array_values($tasks), JSON_PRETTY_PRINT));
         }
 
-        return false;
+        return $found;
     }
 
     private function getNextId(array $tasks): int

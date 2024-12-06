@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-schedule-mgt` will be documented in this file.
 
+## 1.0.1 - 2024-12-06
+
+### Updated
+- Command to toggle scheduled task updated.
+- Command to remove schedule task updated.
+- Class defining storage of scheduled task updated.
+
 ## 1.0.0 - 2024-12-06
 
 ### Added

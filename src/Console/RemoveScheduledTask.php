@@ -12,14 +12,40 @@ class RemoveScheduledTask extends Command
 
     public function handle(ScheduleManager $manager)
     {
-        if ($this->confirm("Are you sure you want to remove task #{$this->argument('id')}? This cannot be undone.")) {
-            $success = $manager->deleteTask((int) $this->argument('id'));
+        $id = (int) $this->argument('id');
+
+        // Show the task that will be removed
+        $tasks = $manager->getAllTasks();
+        $task = collect($tasks)->firstWhere('id', $id);
+
+        if (!$task) {
+            $this->error("Task #{$id} not found.");
+            return 1;
+        }
+
+        $this->table(
+            ['ID', 'Command', 'Frequency', 'Active'],
+            [[
+                $task['id'],
+                $task['command'],
+                $task['frequency_method'],
+                $task['is_active'] ? 'Yes' : 'No'
+            ]]
+        );
+
+        if ($this->confirm("Are you sure you want to remove this task? This cannot be undone.")) {
+            $success = $manager->deleteTask($id);
 
             if ($success) {
                 $this->info('Task removed successfully');
+                return 0;
             } else {
-                $this->error('Task not found or could not be removed');
+                $this->error('Failed to remove task');
+                return 1;
             }
         }
+
+        $this->info('Operation cancelled');
+        return 0;
     }
 }
