@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-schedule-mgt` will be documented in this file.
 
+## 1.1.0
+### Added
+- Security Policy
+- Code of Conduct Document
+- Contributing Guidelines Document
+- Issues Template
+
+### Updated
+- README.md
+- CHANGELOG.md
+
 ## 1.0.2
 
 ### Updated
